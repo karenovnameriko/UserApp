@@ -1,26 +1,40 @@
-name: SonarCloud Scan on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ] jobs:
-  sonarcloud-scan:
-    name: SonarCloud Analysis runs-on: ubuntu-latest
+name: SonarCloud analysis
 
-    steps: - name: Checkout code
-      uses: actions/checkout@v4 with:
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
+
+jobs:
+  Analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
         fetch-depth: 0
+
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3 with:
+      uses: actions/setup-dotnet@v3
+      with:
         dotnet-version: 8.0.x
-    - name: Install SonarCloud scanner
-      run: |
-        dotnet tool install --global dotnet-sonarscanner
-    - name: Build and analyze
+
+    - name: Build project
+      run: dotnet build --configuration Release
+
+    - name: Analyze with SonarCloud
+      uses: SonarSource/sonarcloud-github-action@v2.2.0
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        dotnet sonarscanner begin /k:"karenovnameriko_UserApp" /o:"karenovnameriko" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
-
-        dotnet build --configuration Release
-
-        dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+      with:
+        args:
+          -Dsonar.projectKey=karenovnameriko_UserApp
+          -Dsonar.organization=karenovnameriko
+          -Dsonar.sources=UserApp
+          -Dsonar.csharp.file.suffixes=.cs
