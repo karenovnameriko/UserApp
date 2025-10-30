@@ -1,0 +1,26 @@
+name: SonarCloud Scan on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ] jobs:
+  sonarcloud-scan:
+    name: SonarCloud Analysis runs-on: ubuntu-latest
+
+    steps: - name: Checkout code
+      uses: actions/checkout@v4 with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3 with:
+        dotnet-version: 8.0.x
+    - name: Install SonarCloud scanner
+      run: |
+        dotnet tool install --global dotnet-sonarscanner
+    - name: Build and analyze
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        dotnet sonarscanner begin /k:"karenovnameriko_UserApp" /o:"karenovnameriko" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+
+        dotnet build --configuration Release
+
+        dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
