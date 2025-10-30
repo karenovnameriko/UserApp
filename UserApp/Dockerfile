@@ -5,7 +5,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["UserApp/UserApp.csproj", "UserApp/"]
+COPY ["UserApp.csproj", "."]
 RUN dotnet restore "UserApp/UserApp.csproj"
 COPY . .
 WORKDIR "/src/UserApp"
