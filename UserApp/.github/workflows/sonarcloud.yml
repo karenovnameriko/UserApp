@@ -34,7 +34,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args:
-          -Dsonar.projectKey=karenovnameriko_UserApp
+          -Dsonar.projectKey=karenovnameriko
           -Dsonar.organization=karenovnameriko
           -Dsonar.sources=UserApp
           -Dsonar.csharp.file.suffixes=.cs
