@@ -1,0 +1,32 @@
+name: Trivy Security Scan (TXT Report)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Build Docker image
+      run: |
+        cd UserApp
+        docker build -t userapp .
+        
+    - name: Run Trivy and generate TXT report
+      run: |
+        cd UserApp
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/output aquasec/trivy:latest image -o /output/trivy-security-report.txt userapp
+        
+    - name: Upload TXT report
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-security-report
+        path: UserApp/trivy-security-report.txt
+        retention-days: 30
