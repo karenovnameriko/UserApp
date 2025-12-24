@@ -7,7 +7,7 @@ class Program
 {
     static List<User> users = new List<User>();
     static int nextId = 1;
-    //start
+    // start
     static void Main(string[] args)
     {
         Console.WriteLine("=== Simple User Management ===");
@@ -69,7 +69,7 @@ class Program
         {
             Id = nextId++,
             Name = name,
-            Email = email
+            Email = email,
         };
 
         users.Add(user);

@@ -8,7 +8,6 @@ WORKDIR /src
 COPY ["UserApp.csproj", "."]
 RUN dotnet restore "UserApp.csproj"
 COPY ["Program.cs", "."]
-COPY ["Properties/", "Properties/"]
 RUN dotnet build "UserApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
